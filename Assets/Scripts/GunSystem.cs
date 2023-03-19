@@ -1,5 +1,5 @@
-
 using UnityEngine;
+using TMPro;
 
 public class GunSystem : MonoBehaviour
 {
@@ -20,12 +20,23 @@ public class GunSystem : MonoBehaviour
     public LayerMask whatIsEnemy;
     // references for other aspects, like recognising what an enemy is and when the raycast bullets hit them.
 
+    public GameObject muzzleFlash, bulletHoleGraphic;
+    public CameraShake camShake;
+    public float camShakeMagnitude, camShakeDuration;
+    public TextMeshProUGUI text;
+    //takes the values from the camera shake script to make them individually editable again.
+
+    private void Awake()
+    {
+        bulletsLeft = magazineSize;
+        readyToShoot = true;
+    }
     private void Update()
     {
         MyInput();
+
+        text.SetText(bulletsLeft + " / " + magazineSize);
     }
-
-
     private void MyInput()
     {
         if (allowButtonHold) shooting = Input.GetKey(KeyCode.Mouse0);
@@ -35,6 +46,7 @@ public class GunSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && bulletsLeft < magazineSize && !reloading) Reload();
         // the player can press 'R' to reload, but only if they dont have a full mag or they arent already reloading.
 
+
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
         {
             bulletsShot = bulletsPerTap;
@@ -42,16 +54,16 @@ public class GunSystem : MonoBehaviour
             Shoot();
         }
         // the program will carry out the shooting function, if any of the above variables are met.
-
     }
-
     private void Shoot()
     {
         readyToShoot = false;
 
+
         float x = Random.Range(-spread, spread);
         float y = Random.Range(-spread, spread);
         // the bigger the spread, the bigger difference between x and y values.
+
 
         Vector3 direction = fpsCam.transform.forward + new Vector3(x, y, 0);
         // the spread will still be contained to a forwards direction.
@@ -61,40 +73,44 @@ public class GunSystem : MonoBehaviour
         {
             Debug.Log(rayHit.collider.name);
 
-            if (rayHit.collider.CompareTag("Enemy"));
+            if (rayHit.collider.CompareTag("Enemy")) ;
                 //rayHit.collider.GetComponent<ShootingAi>().TakeDamage(damage);
+
             // a raycast bullet is an invisible ray that gets shot out, this code makes it so that the start point of the ray is the camera,
             // and it goes in a straight line from there. theres also the setup for enemy damage code.
         }
+
+
+        camShake.Shake(camShakeDuration, camShakeMagnitude);
+        //just enables the camera shake to play.
+
+        Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
+        Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
 
         bulletsLeft--;
         bulletsShot--;
         // these two values will count down in order to recognise how they well correlate in the other parts of the code.
 
-        // [ 4:51 IN THE VIDEO ] ////////////////////////////////////////////
 
         Invoke("ResetShot", timeBetweenShooting);
         // there will be a slight delay between resetting your shoot(from reloading ect.), and then continuing to.
 
         if (bulletsShot > 0 && bulletsLeft > 0)
-        Invoke("Shoot", timeBetweenShots);
+            Invoke("Shoot", timeBetweenShots);
     }
-
-    private void resetShot()
+    private void ResetShot()
     {
         readyToShoot = true;
     }
-
     private void Reload()
     {
         reloading = true;
         Invoke("ReloadFinished", reloadTime);
         //if the reload key is pressed, the ReloadFinished function will run.
     }
-
     private void ReloadFinished()
     {
         bulletsLeft = magazineSize;
+        reloading = false;
     }
-
 }
