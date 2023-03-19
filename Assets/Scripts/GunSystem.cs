@@ -37,6 +37,8 @@ public class GunSystem : MonoBehaviour
 
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
         {
+            bulletsShot = bulletsPerTap;
+            //when calling the shoot function, the amount of bullets fired will be the same as the amount of times the input key is pressed.
             Shoot();
         }
         // the program will carry out the shooting function, if any of the above variables are met.
