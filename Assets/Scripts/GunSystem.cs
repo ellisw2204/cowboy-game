@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using EZCameraShake;
 
 public class GunSystem : MonoBehaviour
 {
@@ -21,7 +22,6 @@ public class GunSystem : MonoBehaviour
     // references for other aspects, like recognising what an enemy is and when the raycast bullets hit them.
 
     public GameObject muzzleFlash, bulletHoleGraphic;
-    public CameraShake camShake;
     public float camShakeMagnitude, camShakeDuration;
     public TextMeshProUGUI text;
     //takes the values from the camera shake script to make them individually editable again.
@@ -73,7 +73,7 @@ public class GunSystem : MonoBehaviour
         {
             Debug.Log(rayHit.collider.name);
 
-            if (rayHit.collider.CompareTag("Enemy")) ;
+            if (rayHit.collider.CompareTag("Enemy"));
                 //rayHit.collider.GetComponent<ShootingAi>().TakeDamage(damage);
 
             // a raycast bullet is an invisible ray that gets shot out, this code makes it so that the start point of the ray is the camera,
@@ -81,8 +81,9 @@ public class GunSystem : MonoBehaviour
         }
 
 
-        camShake.Shake(camShakeDuration, camShakeMagnitude);
-        //just enables the camera shake to play.
+        CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
+        Debug.Log("Working shake");
+        //just enables the camera shake to play once following the set values for magnitude, roughness, fade in and fade out.
 
         Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
         Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
