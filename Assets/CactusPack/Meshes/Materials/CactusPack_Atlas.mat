@@ -33,7 +33,7 @@ Material:
     - _RimPower: 3.4776123
     - _SquashAmount: 1
     m_Colors:
-    - _Color: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
+    - _Color: {r: 0.6226415, g: 0.2791369, b: 0.23202206, a: 1}
     - _RimColor: {r: 0.47058824, g: 0.37254837, b: 0.23437138, a: 0}
     - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
