@@ -5,6 +5,8 @@ using EZCameraShake;
 public class GunSystem : MonoBehaviour
 {
 
+    public Animator anim;
+    // the animation can be selected in the main Unity design space
     public int damage;
     public float timeBetweenShooting, spread, range, reloadTime, timeBetweenShots;
     public int magazineSize, bulletsPerTap;
@@ -30,6 +32,9 @@ public class GunSystem : MonoBehaviour
     {
         bulletsLeft = magazineSize;
         readyToShoot = true;
+
+        anim = gameObject.GetComponent<Animator>();
+        // on start the game will get the information of the animation
     }
     private void Update()
     {
@@ -102,12 +107,17 @@ public class GunSystem : MonoBehaviour
     private void ResetShot()
     {
         readyToShoot = true;
+    
     }
     private void Reload()
     {
         reloading = true;
         Invoke("ReloadFinished", reloadTime);
         //if the reload key is pressed, the ReloadFinished function will run.
+
+        anim.Play("sgreload");
+        // if the reload key is pressed, the "reload" animation will play.
+
     }
     private void ReloadFinished()
     {
