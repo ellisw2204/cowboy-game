@@ -52,13 +52,96 @@ public class AIController : MonoBehaviour
 
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speedWalk;
-        navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);     
+        navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
     }
 
     //after the start functions have been carried out, it will move onto the methods, that explain what the variables actually do.
     void Update()
     {
-        
+        EnvironmentView();
+
+        if (!m_IsPatrol)
+        {
+            Chasing();
+        }
+        else
+        {
+            Patrolling();
+        }
+    }
+    // simply setting the chasing and patrolling methods to play depending on wether or not the player is in view.
+
+    private void Chasing()
+    {
+        m_PlayerNear = false;
+        playerLastPosition = Vector3.zero;
+        // set the position to chase to as the last one that the player was at.
+
+        if (!m_CaughtPlayer)
+        {
+            Move(speedRun);
+            navMeshAgent.SetDestination(m_PlayerPosition);
+        }
+        if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        {
+            if (m_WaitTime <= 0 && !m_CaughtPlayer && Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) >= 6f)
+            {
+                m_IsPatrol = true;
+                m_PlayerNear = false;
+                Move(speedWalk);
+                m_TimeToRotate = timeToRotate;
+                m_WaitTime = startWaitTime;
+                navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+            }
+            else
+            {
+                if (Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) >= 2.5f)
+                {
+                    Stop();
+                    m_WaitTime -= Time.deltaTime;
+                }
+            }
+        }
+
+    }
+
+    // the main part that controlls the actual patrolling system (not just the detection).
+    private void Patrolling()
+    {
+        if (m_PlayerNear)
+        {
+            if (m_TimeToRotate <= 0)
+            {
+                Move(speedWalk);
+                LookingPlayer(playerLastPosition);
+            }
+            else
+            {
+                Stop();
+                m_TimeToRotate -= Time.deltaTime;
+            }
+            // when the enemy reaches the waypoint (last player position), it will take a pause (time to rotate) before moving onto the next.
+        }
+        else
+        {
+            m_PlayerNear = false;
+            playerLastPosition = Vector3.zero;
+            navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+            if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+            {
+                if (m_WaitTime <= 0)
+                {
+                    NextPoint();
+                    Move(speedWalk);
+                    m_WaitTime = startWaitTime;
+                }
+                else
+                {
+                    Stop();
+                    m_WaitTime -= Time.deltaTime;
+                }
+            }
+        }
     }
 
     void Move(float speed)
@@ -90,7 +173,7 @@ public class AIController : MonoBehaviour
     void LookingPlayer(Vector3 player)
     {
         navMeshAgent.SetDestination(player);
-        if(Vector3.Distance(transform.position, player) <= 0.3)
+        if (Vector3.Distance(transform.position, player) <= 0.3)
         {
             if (m_WaitTime <= 0)
             {
@@ -113,7 +196,40 @@ public class AIController : MonoBehaviour
 
     void EnvironmentView()
     {
-        //3:14 in the video
-    }
+        Collider[] playerInRange = Physics.OverlapSphere(transform.position, viewRadius, playerMask);
+        for (int i = 0; i < playerInRange.Length; i++)
+        {
+            Transform player = playerInRange[i].transform;
+            Vector3 dirToPlayer = (player.position - transform.position).normalized;
+            if (Vector3.Angle(transform.forward, dirToPlayer) < viewAngle / 2)
+            {
+                float dstToPlayer = Vector3.Distance(transform.position, player.position);
+                if (!Physics.Raycast(transform.position, dirToPlayer, dstToPlayer, obstacleMask))
+                {
+                    m_PlayerInRange = true;
+                    m_IsPatrol = false;
+                }
+                // if these condiitons are met, then the player will be considered in range, and the enemy will stop patrolling.
+                else
+                {
+                    m_PlayerInRange = false;
+                }
+                // if the conditions are not met, the AI wont detect the player.
+            }
+            if (Vector3.Distance(transform.position, player.position) > viewRadius)
+            {
+                m_PlayerInRange = false;
+            }
+            if (m_PlayerInRange)
+            {
+                m_PlayerPosition = player.transform.position;
+            }
 
+            // the AI will detect both the player and other objects, by creating an invisible sphere around the enemy to detect the player mask.
+            // then when detected, the AI will save the information about the position.
+        }
+        // will allow the enemy AI to see us.
+
+    }
 }
+
