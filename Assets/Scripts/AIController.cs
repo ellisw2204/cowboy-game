@@ -7,6 +7,9 @@ using UnityEngine.AI;
 
 public class AIController : MonoBehaviour
 {
+    private Animator anim;
+    // take the animator component i made
+
     public NavMeshAgent navMeshAgent;
     public float startWaitTime = 4;
     public float timeToRotate = 2;
@@ -53,6 +56,8 @@ public class AIController : MonoBehaviour
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speedWalk;
         navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+
+        anim = GetComponent<Animator>();
     }
 
     //after the start functions have been carried out, it will move onto the methods, that explain what the variables actually do.
@@ -63,10 +68,14 @@ public class AIController : MonoBehaviour
         if (!m_IsPatrol)
         {
             Chasing();
+            anim.SetBool("Chasing", true);
+            // when the enemy detects the player, the chasing option in the animator will be set to true, switching the animation to the chasing one.
         }
         else
         {
             Patrolling();
+            anim.SetBool("Chasing", false);
+            // else it will go back to the patrolling.
         }
     }
     // simply setting the chasing and patrolling methods to play depending on wether or not the player is in view.
@@ -168,6 +177,7 @@ public class AIController : MonoBehaviour
     void CaughtPlayer()
     {
         m_CaughtPlayer = true;
+
     }
 
     void LookingPlayer(Vector3 player)

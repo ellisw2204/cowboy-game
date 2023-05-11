@@ -74,16 +74,16 @@ public class GunSystem : MonoBehaviour
         // the spread will still be contained to a forwards direction.
 
 
-        if (Physics.Raycast(fpsCam.transform.position, direction, out rayHit, range, whatIsEnemy))
-        {
-            Debug.Log(rayHit.collider.name);
-
-            if (rayHit.collider.CompareTag("Enemy"));
-                //rayHit.collider.GetComponent<ShootingAi>().TakeDamage(damage);
-
+        //if (Physics.Raycast(fpsCam.transform.position, direction, out rayHit, range, whatIsEnemy))
+        //{
+        //    Debug.Log(rayHit.collider.name);
+        //
+        //    if (rayHit.collider.CompareTag("Enemy"));
+        //        rayHit.collider.GetComponent<ShootingAi>().TakeDamage(damage);
+        //
             // a raycast bullet is an invisible ray that gets shot out, this code makes it so that the start point of the ray is the camera,
             // and it goes in a straight line from there. theres also the setup for enemy damage code.
-        }
+        //}
 
 
         CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
