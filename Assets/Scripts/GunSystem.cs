@@ -5,8 +5,6 @@ using EZCameraShake;
 public class GunSystem : MonoBehaviour
 {
 
-    public AudioSource source;
-    public AudioClip clip;
     public Animator anim;
     // the animation can be selected in the main Unity design space
     public int damage;
@@ -106,7 +104,6 @@ public class GunSystem : MonoBehaviour
         if (bulletsShot > 0 && bulletsLeft > 0)
             Invoke("Shoot", timeBetweenShots);
 
-        source.PlayOneShot(clip);
     }
     private void ResetShot()
     {

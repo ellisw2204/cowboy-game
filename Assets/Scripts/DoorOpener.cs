@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DoorOpener : MonoBehaviour
 {
-
     public float open = 100f;
     public float range = 10f;
 
@@ -49,6 +48,4 @@ public class DoorOpener : MonoBehaviour
         door.GetComponent<Animator>().Play("New State");
         isOpening = false;
     }
-
-
 }

@@ -20,7 +20,7 @@ public class Sprint : MonoBehaviour
 
         else if(Input.GetKeyUp(KeyCode.LeftShift))
             basicMovementScript.speed -= sprintSpeed;
-        //when the shift key is held down the player's speed will be taht of the regular speed + whatever SprintSpeed is set to.
+        //when the shift key is held down the player's speed will be that of the regular speed + whatever SprintSpeed is set to.
 
     }
 }

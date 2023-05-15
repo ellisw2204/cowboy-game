@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class HeadBobSystem : MonoBehaviour
 {
-
     [Range(0.001f, 0.01f)]
     public float Amount = 0.002f;
     [Range(1f, 30f)]
@@ -13,21 +12,17 @@ public class HeadBobSystem : MonoBehaviour
 
     [Range(10f, 100f)]
     public float Smooth = 10.0f;
-
     Vector3 StartPos;
-
 
     void Start()
     {
         StartPos = transform.localPosition;
     }
-
     void Update()
     {
         CheckForHeadBobTrigger();
         StopHeadBob();
     }
-
     private void CheckForHeadBobTrigger()
     {
         float inputMagnitude = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).magnitude;
@@ -38,7 +33,6 @@ public class HeadBobSystem : MonoBehaviour
         }
         // this will start the head bob code below if the play has a magnitue greater than 0 (moving)
     }
-
     private Vector3 StartHeadBob()
     {
         Vector3 pos = Vector3.zero;
@@ -46,14 +40,11 @@ public class HeadBobSystem : MonoBehaviour
         pos.x += Mathf.Lerp(pos.x, Mathf.Cos(Time.time * Frequency / 2f) * Amount * 1.6f, Smooth * Time.deltaTime);
         transform.localPosition += pos;
         // the x and y positions of the camera will loop
-
         return pos;
     }
-
     private void StopHeadBob()
     {
         if (transform.localPosition == StartPos) return;
         transform.localPosition = Vector3.Lerp(transform.localPosition, StartPos, 1 * Time.deltaTime);
-
     }
 }
